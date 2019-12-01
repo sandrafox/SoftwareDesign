@@ -1,0 +1,7 @@
+ru\lisitsyna\hashtags\client\ApiClient.class
+ru\lisitsyna\hashtags\client\PostInfo.class
+ru\lisitsyna\hashtags\counter\HashtagsCounter.class
+ru\lisitsyna\hashtags\client\VkClient.class
+ru\lisitsyna\hashtags\counter\HashtagsCounterImpl.class
+ru\lisitsyna\hashtags\client\VkResponseParser.class
+ru\lisitsyna\hashtags\http\UrlReader.class
