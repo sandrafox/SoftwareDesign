@@ -1,0 +1,11 @@
+<root>
+    <item name='io.reactivex.netty.protocol.http.server.HttpServer'>
+        <annotation name='java.lang.Deprecated'/>
+    </item>
+    <item name='io.reactivex.netty.protocol.http.server.HttpServer io.reactivex.netty.protocol.http.server.HttpServer&lt;io.netty.buffer.ByteBuf,io.netty.buffer.ByteBuf&gt; newServer(int)'>
+        <annotation name='java.lang.Deprecated'/>
+        <annotation name='org.jetbrains.annotations.Contract'>
+            <val val="&quot;_-&gt;new&quot;"/>
+        </annotation>
+    </item>
+</root>
