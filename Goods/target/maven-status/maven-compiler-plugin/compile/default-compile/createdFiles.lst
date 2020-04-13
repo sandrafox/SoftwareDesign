@@ -1,4 +1,5 @@
 dao\Currency$1$2.class
+httpServer\RxNettyHttpServerGoods.class
 dao\ReactiveMongoDriverGoods.class
 dao\Currency.class
 dao\Currency$1$1.class

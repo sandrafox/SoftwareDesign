@@ -1,11 +1,17 @@
 package httpServer;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.QueryStringDecoder;
+//import io.reactivex.Observable;
 import io.reactivex.netty.protocol.http.server.HttpServer;
 import dao.Currency;
 import dao.Good;
 import dao.ReactiveMongoDriverGoods;
 import dao.User;
+import io.reactivex.netty.protocol.http.server.HttpServerRequest;
+import io.reactivex.netty.protocol.http.server.HttpServerResponse;
 import rx.Observable;
 
 import java.util.List;
@@ -13,70 +19,79 @@ import java.util.Map;
 
 //import static io.reactivex.netty.protocol.http.server.HttpServer.*;
 
-@SuppressWarnings("deprecation")
 public class RxNettyHttpServerGoods {
     public static void main(String[] args) {
-        HttpServer.newServer(8080)
-                .start((req, resp) -> {
-                    String name = req.getDecodedPath().substring(1);
-                    Map<String, List<String>> parameters = new QueryStringDecoder(req.getUri()).parameters();
-                    Observable<String> response;
-                    switch (name) {
-                        case "register":
-                            response = ReactiveMongoDriverGoods
-                                    .getUsers()
-                                    .exists(user -> parameters.get("id").get(0).equals("" + user.getId()))
-                                    .flatMap(exists -> {
-                                        if (exists) {
-                                            return Observable.just("Sorry, can't register because he already exists\n");
-                                        } else {
-                                            String currency = parameters.get("currency").get(0);
-                                            if (!Currency.exists(currency)) {
-                                                return Observable.just("Sorry, currency " + currency + " is invalid\n");
-                                            }
-                                            User user = new User(Integer.parseInt(parameters.get("id").get(0)),
-                                                    new Currency(currency), parameters.get("name").get(0));
-                                            return ReactiveMongoDriverGoods.addUser(user)
-                                                    .map(success -> user.toString() + " is registered\n");
+        //if (ReactiveMongoDriverGoods.open) ReactiveMongoDriverGoods.close();
+        //ReactiveMongoDriverGoods.open();
+        try {
+            HttpServer.newServer(8080).start((req, resp) -> {
+                String name = req.getDecodedPath().substring(1);
+                Map<String, List<String>> parameters = req.getQueryParameters();
+                Observable<String> response;
+                switch (name) {
+                    case "register":
+                        response = ReactiveMongoDriverGoods
+                                .getUsers()
+                                .exists(user -> parameters.get("id").get(0).equals("" + user.getId()))
+                                .flatMap(exists -> {
+                                    if (exists) {
+                                        return Observable.just("Sorry, can't register because he already exists\n");
+                                    } else {
+                                        String currency = parameters.get("currency").get(0);
+                                        if (!Currency.exists(currency)) {
+                                            return Observable.just("Sorry, currency " + currency + " is invalid\n");
                                         }
-                                    });
-                            break;
-                        case "add":
-                            response = ReactiveMongoDriverGoods
-                                    .getGoods()
-                                    .exists(good -> parameters.get("id").get(0).equals("" + good.getId()))
-                                    .flatMap(exists -> {
-                                        if (exists) {
-                                            return Observable.just("Sorry, can't add the good because it already exists\n");
-                                        } else {
-                                            String currency = parameters.get("currency").get(0);
-                                            if (!Currency.exists(currency)) {
-                                                return Observable.just("Sorry, currency " + currency + " is invalid\n");
-                                            }
-                                            Good good = new Good(Integer.parseInt(parameters.get("id").get(0)),
-                                                    parameters.get("name").get(0),
-                                                    Double.parseDouble(parameters.get("price").get(0)),
-                                                    new Currency(currency));
-                                            return ReactiveMongoDriverGoods.addGood(good)
-                                                    .map(success -> good.toString() + " is added\n");
+                                        User user = new User(Integer.parseInt(parameters.get("id").get(0)),
+                                                new Currency(currency), parameters.get("name").get(0));
+                                        return ReactiveMongoDriverGoods.addUser(user)
+                                                .map(success -> user.toString() + " is registered\n");
+                                    }
+                                });
+                        break;
+                    case "add":
+                        response = ReactiveMongoDriverGoods
+                                .getProducts()
+                                .exists(good -> parameters.get("id").get(0).equals("" + good.getId()))
+                                .flatMap(exists -> {
+                                    if (exists) {
+                                        return Observable.just("Sorry, can't add the good because it already exists\n");
+                                    } else {
+                                        String currency = parameters.get("currency").get(0);
+                                        if (!Currency.exists(currency)) {
+                                            return Observable.just("Sorry, currency " + currency + " is invalid\n");
                                         }
-                                    });
-                            break;
-                        case "show":
-                            response = ReactiveMongoDriverGoods
-                                    .getUsers()
-                                    .filter(user -> parameters.get("id").get(0).equals(user.getId()))
-                                    .firstOrDefault(new User(0, new Currency("RUB"), ""))
-                                    .flatMap(user -> ReactiveMongoDriverGoods.getGoods()
-                                    .map(product -> "(" + product.getId() + ") " + product.getName() + " : " +
-                                            product.getCurrency().convertTo(product.getPrice(), user.getCurrency()) +
-                                            " " + user.getCurrency().getCurrency()));
-                            break;
-                        default:
-                            response = null;
-                    }
-                    return resp.writeString(response);
-                })
-                .awaitShutdown();
+                                        Good good = new Good(Integer.parseInt(parameters.get("id").get(0)),
+                                                parameters.get("name").get(0),
+                                                Double.parseDouble(parameters.get("price").get(0)),
+                                                new Currency(currency));
+                                        return ReactiveMongoDriverGoods.addProduct(good)
+                                                .map(success -> good.toString() + " is added\n");
+                                    }
+                                });
+                        break;
+                    case "show-users":
+                        response = ReactiveMongoDriverGoods
+                                .getUsers()
+                                .map(user -> "(" + user.getId() + ") " + user.getName() + " " + user.getCurrency().getCurrency());
+                        break;
+                    case "show":
+                        response = ReactiveMongoDriverGoods
+                                .getUsers()
+                                .filter(user -> parameters.get("id").get(0).equals("" + user.getId()))
+                                .firstOrDefault(new User(0, new Currency("RUB"), ""))
+                                .flatMap(user -> ReactiveMongoDriverGoods.getProducts()
+                                        .map(product -> "(" + product.getId() + ") " + product.getName() + " : " +
+                                                product.getCurrency().convertTo(product.getPrice(), user.getCurrency()) +
+                                                " " + user.getCurrency().getCurrency()));
+                        break;
+                    default:
+                        response = null;
+                }
+                return resp.writeString(response);
+            })
+                    .awaitShutdown();
+        } finally {
+            ReactiveMongoDriverGoods.close();
+        }
     }
 }
