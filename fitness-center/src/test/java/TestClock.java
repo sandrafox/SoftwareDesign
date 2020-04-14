@@ -1,4 +1,29 @@
-package PACKAGE_NAME;
+import java.time.*;
 
-public class TestClock {
+public class TestClock extends Clock {
+    private Instant now;
+
+    public TestClock(LocalDateTime time) {
+        super();
+        now = time.atZone(ZoneId.systemDefault()).toInstant();
+    }
+
+    @Override
+    public ZoneId getZone() {
+        return ZoneId.systemDefault();
+    }
+
+    @Override
+    public Clock withZone(ZoneId zone) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Instant instant() {
+        return now;
+    }
+
+    public void plusHours(long hours) {
+        now = now.plusSeconds(hours * 3600L);
+    }
 }
