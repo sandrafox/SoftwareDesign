@@ -1,4 +1,4 @@
-package java.ru.lisitsyna.softwaredesign.calculator.token;
+package ru.lisitsyna.softwaredesign.calculator.token;
 
 public class Error extends TokenizerState {
     public Error(Tokenizer tokenizer) {

@@ -1,8 +1,8 @@
-package java.ru.lisitsyna.softwaredesign.calculator;
+package ru.lisitsyna.softwaredesign.calculator;
 
-import java.ru.lisitsyna.softwaredesign.calculator.token.BraceToken;
-import java.ru.lisitsyna.softwaredesign.calculator.token.NumberToken;
-import java.ru.lisitsyna.softwaredesign.calculator.token.OperationToken;
+import ru.lisitsyna.softwaredesign.calculator.token.BraceToken;
+import ru.lisitsyna.softwaredesign.calculator.token.NumberToken;
+import ru.lisitsyna.softwaredesign.calculator.token.OperationToken;
 
 public interface TokenVisitor {
     void visit(NumberToken token);

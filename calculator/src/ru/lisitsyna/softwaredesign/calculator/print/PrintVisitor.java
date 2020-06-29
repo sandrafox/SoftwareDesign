@@ -1,19 +1,19 @@
-package java.ru.lisitsyna.softwaredesign.calculator.print;
+package ru.lisitsyna.softwaredesign.calculator.print;
 
-import java.ru.lisitsyna.softwaredesign.calculator.TokenVisitor;
-import java.ru.lisitsyna.softwaredesign.calculator.token.BraceToken;
-import java.ru.lisitsyna.softwaredesign.calculator.token.NumberToken;
-import java.ru.lisitsyna.softwaredesign.calculator.token.OperationToken;
-import java.ru.lisitsyna.softwaredesign.calculator.token.Token;
-import java.util.ArrayList;
+import ru.lisitsyna.softwaredesign.calculator.TokenVisitor;
+import ru.lisitsyna.softwaredesign.calculator.token.BraceToken;
+import ru.lisitsyna.softwaredesign.calculator.token.NumberToken;
+import ru.lisitsyna.softwaredesign.calculator.token.OperationToken;
+import ru.lisitsyna.softwaredesign.calculator.token.Token;
+
 import java.util.List;
-import java.util.Stack;
 
 public class PrintVisitor implements TokenVisitor {
     public void print(List<Token> tokens) {
         for (Token token : tokens) {
             token.accept(this);
         }
+        System.out.println();
     }
 
     @Override

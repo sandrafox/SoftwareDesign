@@ -1,4 +1,4 @@
-package java.ru.lisitsyna.softwaredesign.calculator.token;
+package ru.lisitsyna.softwaredesign.calculator.token;
 
 public abstract class TokenizerState {
     protected Tokenizer tokenizer;

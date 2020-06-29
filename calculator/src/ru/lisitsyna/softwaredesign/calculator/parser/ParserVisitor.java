@@ -1,8 +1,9 @@
-package java.ru.lisitsyna.softwaredesign.calculator.parser;
+package ru.lisitsyna.softwaredesign.calculator.parser;
 
-import java.rmi.server.Operation;
-import java.ru.lisitsyna.softwaredesign.calculator.TokenVisitor;
-import java.ru.lisitsyna.softwaredesign.calculator.token.*;
+import ru.lisitsyna.softwaredesign.calculator.TokenVisitor;
+import ru.lisitsyna.softwaredesign.calculator.token.*;
+
+import ru.lisitsyna.softwaredesign.calculator.token.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -17,6 +18,9 @@ public class ParserVisitor implements TokenVisitor {
         for (Token token : tokens) {
             token.accept(this);
         }
+        while (!operations.empty()) {
+            postfixTokens.add(operations.pop());
+        }
         return postfixTokens;
     }
 
@@ -30,12 +34,15 @@ public class ParserVisitor implements TokenVisitor {
         if (token.getType() == BraceType.LEFT) {
             operations.push(token);
         } else {
-            Token t = new OperationToken(OperationType.PLUS);
-            while (!operations.empty() && (t = operations.pop()).getClass() != BraceToken.class) {
+            if (operations.empty())
+                throw new IllegalStateException("Problem with right brace sequence");
+            Token t = operations.pop();
+            while (!operations.empty() && t.getClass() != BraceToken.class) {
                 postfixTokens.add(t);
+                t = operations.pop();
             }
             if (t.getClass() != BraceToken.class) {
-                throw new IllegalStateException("");
+                throw new IllegalStateException("Problem with right brace sequence");
             }
         }
     }

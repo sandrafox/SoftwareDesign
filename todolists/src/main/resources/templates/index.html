@@ -1,10 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>Add question</title>
 </head>
 <body>
-$END$
+
+<table>
+    <th:block th:each="worklist : ${workLists}">
+        <tr>
+            <th th:utext="${worklist.getName()}" />
+            <td>
+                <form method="post" action="/remove-worklist">
+                    <input type="hidden" name="worklistid" th:value="${worklist.getId()}">
+                    <input type="submit" value="Remove">
+                </form>
+            </td>
+        </tr>
+        <tr th:each="work : ${worklist.getWorkList()}">
+            <td th:text="${work.getName()}"></td>
+            <td>
+                <form method="POST" action="/remove-work">
+                    <input type="hidden" name="workid" th:value="${work.getId()}">
+                    <input type="hidden" name="worklistid" th:value="${worklist.getId()}">
+                    <input type="submit" value="Done">
+                </form>
+            </td>
+        </tr>
+        <tr>
+            <form th:object="${workN}" method="POST" action="/add-work">
+                <td><label>Name:</label></td>
+                <td><input type="text" th:field="*{name}"/></td>
+                <td><input type="hidden" name="worklistid" th:value="${worklist.getId()}">
+                    <input type="submit" value="Add"></td>
+            </form>
+        </tr>
+    </th:block>
+</table>
+
+<form th:object="${worklistN}" method="POST" action="/add-worklist">
+    <table>
+        <tr>
+            <td><label>Name:</label></td>
+            <td><input type="text" th:field="*{name}"/></td>
+        </tr>
+    </table>
+
+    <input type="submit" value="add">
+</form>
+
 </body>
 </html>

@@ -1,4 +1,4 @@
-package java.ru.lisitsyna.softwaredesign.calculator.token;
+package ru.lisitsyna.softwaredesign.calculator.token;
 
 public class Start extends TokenizerState {
     public Start(Tokenizer tokenizer) {
@@ -33,7 +33,7 @@ public class Start extends TokenizerState {
                     TokenizerState number = new Number(tokenizer);
                     tokenizer.changeState(number);
                     number.parseSymbol(c);
-                } else {
+                } else if (!Character.isWhitespace(c) && c != '$') {
                     TokenizerState error = new Error(tokenizer);
                     tokenizer.changeState(error);
                     error.parseSymbol(c);

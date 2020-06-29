@@ -1,6 +1,5 @@
-package java.ru.lisitsyna.softwaredesign.calculator.token;
+package ru.lisitsyna.softwaredesign.calculator.token;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +24,9 @@ public class Tokenizer {
             parseSymbol(input.charAt(i));
         }
         if (state.getClass() == Error.class) {
-            System.out.println("Sorry, but we have incorrect symbol at position " + (i + 1));
+            throw new IllegalStateException("Sorry, but we have incorrect symbol at position " + (i + 1));
         }
+        parseSymbol('$');
         return tokens;
     }
 

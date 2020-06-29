@@ -1,6 +1,6 @@
-package java.ru.lisitsyna.softwaredesign.calculator.token;
+package ru.lisitsyna.softwaredesign.calculator.token;
 
-import java.ru.lisitsyna.softwaredesign.calculator.TokenVisitor;
+import ru.lisitsyna.softwaredesign.calculator.TokenVisitor;
 
 public class NumberToken implements Token {
     private int number;
